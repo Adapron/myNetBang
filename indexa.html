@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Button</title>
+</head>
+<body>
+
+    <label for="field1">Field 1:</label>
+    <input type="text" id="field1" placeholder="Enter text for Field 1">
+
+    <button onclick="hostServerButton('field1')">host server</button>
+
+    <br>
+
+    <label for="field2">Field 2:</label>
+    <input type="text" id="field2" placeholder="Enter text for Field 2">
+
+    <button onclick="joinServerButton('field2')">join server</button>
+
+    <div id="infoCardContainer"></div>
+
+    <script>
+
+class InfoCard {
+            static cardCount = 0;
+            static cardCollection = {};
+
+            constructor(name, age) {
+                this.name = name;
+                this.age = age;
+                this.id = `infoCard${InfoCard.cardCount++}`;
+                InfoCard.cardCollection[this.id] = this;
+            }
+
+            setName(newName) {
+                this.name = newName;
+                this.updateHtml();
+            }
+
+            updateHtml() {
+                const cardElement = document.getElementById(this.id);
+                if (cardElement) {
+                    cardElement.innerHTML = `<p>Name: ${this.name}</p><p>Age: ${this.age}</p>`;
+                }
+            }
+
+            renderHtml() {
+                const cardContainer = document.getElementById('infoCardContainer');
+                if (cardContainer) {
+                    const cardElement = document.createElement('div');
+                    cardElement.id = this.id;
+                    cardElement.innerHTML = `<p>Name: ${this.name}</p><p>Age: ${this.age}</p>`;
+                    cardContainer.appendChild(cardElement);
+                }
+            }
+
+            remove() {
+                const cardElement = document.getElementById(this.id);
+                if (cardElement) {
+                    cardElement.remove();
+                    delete InfoCard.cardCollection[this.id];
+                }
+            }
+        }
+
+        const myInfoCard1 = new InfoCard('John', 25);
+        const myInfoCard2 = new InfoCard('Alice', 30);
+        
+        myInfoCard1.renderHtml();
+        myInfoCard2.renderHtml();
+
+        // Example: Update the name and re-render
+        setTimeout(() => {
+            myInfoCard1.setName('NewName');
+        }, 2000);
+
+        // Example: Remove a card after 4 seconds
+        setTimeout(() => {
+            myInfoCard2.remove();
+        }, 4000);
+
+
+
+        function hostServerButton(fieldId) {
+            var fieldValue = document.getElementById(fieldId).value;
+            hostServer(fieldValue)
+        }
+
+        function joinServerButton(fieldId) {
+            var fieldValue = document.getElementById(fieldId).value;
+            joinServer(fieldValue)
+        }
+
+    const ws = new WebSocket('wss://free.blr2.piesocket.com/v3/1?api_key=sAT6aDNbjGJDLHACTiYNd5FmRO61c8aNA1a2jTuL&notify_self=1');
+
+    var hostID;
+    var userID;
+
+    function generateRandomString(length) {
+        const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let randomString = '';
+
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            randomString += characters.charAt(randomIndex);
+        }
+
+        return randomString;
+    }
+
+    ws.addEventListener('open', (event) => {
+        // Connection opened
+
+        userID = generateRandomString(10)
+
+    });   
+
+  ws.addEventListener('message', (event) => {
+    // Handle incoming messages
+    const message = event.data;
+    
+    args = message.split(" ")
+    messagerId = args[0]
+    args.shift();
+    console.log(args);
+    console.log(args[0])
+    console.log(messagerId)
+    switch (args[0]) {
+        case "join":
+            name = args[1]
+            handleJoin(name, messagerId)
+            break;
+
+        case "confirm":
+            if(args[1] != userID) return;
+
+            if(joining){
+                alert("joined")
+                hostID = messagerId;
+                joining = false;
+            }
+            break;
+
+        case "serverPacket":
+            
+        default:
+            break;
+    }
+  });
+
+  ws.addEventListener('close', (event) => {
+    // Connection closed
+  });
+
+  
+
+  // Send a message
+  function sendMessage(message) {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(userID + " " + message);
+    }
+  }
+
+    var serverName;
+    var hosts = false;
+    var joining = false;
+    var connectedUsers = [];
+
+    function hostServer(name) {
+        serverName = name;
+        hosts = true;
+        console.log("hosting " + name)
+
+    }
+
+    function handleJoin(name, messagerId) {
+        console.log("trying to handle join " + name + " " + serverName)
+        if(name == serverName){
+            sendMessage("confirm " + messagerId)
+            connectedUsers.push(messagerId)
+        }
+    }
+
+    function joinServer(name) {
+        sendMessage("join " + name)
+        console.log("trying to join " + name)
+        joining = true;
+    }
+
+
+    
+</script>
+
+</body>
+</html>
