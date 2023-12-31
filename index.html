@@ -7,7 +7,202 @@
     </head>
     <body>
 
-        <script type="module" src="./Code/main.js"></script>
+        <script>
+            class IdManager{
+                static ids = [];
+                static lastID = 0;
 
+                static newID(){
+                    this.lastID++;
+                    return this.lastID;
+                }
+
+                static removeID(id){
+                    const index = array.indexOf(id);
+                    if (index > -1) { // only splice array when item is found
+                        ids.splice(index, 1); // 2nd parameter means remove one item only
+                    }
+                }
+            }
+            class MyElement{
+                id;
+                element;
+
+                constructor() {
+                    this.id = IdManager.newID();
+                    this.element = document.createElement('div');
+                    this.element.id = this.id;
+                    this.element.className = this.constructor.name;
+                }
+
+                //updateHtml() {
+                //    const cardElement = document.getElementById(this.id);
+                //    if (cardElement) {
+                //        cardElement.innerHTML = `<p>Name: ${this.name}</p><p>Age: ${this.age}</p>`;
+                //    }
+                //}
+
+                renderHtml() {
+                    document.appendChild(element);
+                }
+
+                remove() {
+                    const cardElement = document.getElementById(this.id);
+                    if (cardElement) {
+                        cardElement.remove();
+                        delete IdManager.removeID(this.id);
+                    }
+                }
+            }
+
+            class Pack extends MyElement{
+                constructor(){
+                    super();
+                }
+            }
+
+            class CardHolder extends MyElement{
+                constructor(){
+                    super();
+                }
+
+
+            }
+
+            class CardDisplay extends MyElement{
+                constructor(){
+                    super();
+                }
+            }
+
+            class LifeAndCharacter extends MyElement{
+                character;
+                life = -1;
+                constructor(){
+                    super();
+                }
+            }
+            
+            class Table extends MyElement{
+
+                constructor(){
+                    super();
+                }
+                mainPack = [];
+
+                secondaryPTSs = [];
+                mainPTS;
+
+                MTS;
+
+                characterPack = [];
+                rolesPack = [];
+
+                load(defaults) {
+                    defaults = new Defaults();
+                    this.mainPack = defaults.mainPack;
+                    this.characterPack = defaults.characterPack;
+                    this.rolesPack = defaults.rolesPack;
+
+
+                    
+                }
+
+
+                
+            }
+            class PlayerTableSpace extends MyElement{
+                hand;   
+                inventory;
+                LAC;
+                roleCard;
+
+                
+                constructor() {
+                    super(); // Call the constructor of the base class (Element)
+
+                    this.hand = new CardHolder();
+                    this.inventory = new CardHolder();
+                    this.LAC = new LifeAndCharacter();
+                    this.roleCard = new CardDisplay();
+
+                    this.element.appendChild(this.hand.element);
+                    this.element.appendChild(this.inventory.element);
+                    this.element.appendChild(this.LAC.element);
+                    this.element.appendChild(this.roleCard.element);
+                }
+            }
+
+            
+            class MainTableSpace extends MyElement{
+                pack;
+                cardHolder;
+                constructor() {
+                    super(); // Call the constructor of the base class (Element)
+
+                    this.cardHolder = new CardHolder();
+                    this.pack = new Pack();
+
+                    this.element.appendChild(this.cardHolder.element);
+                    this.element.appendChild(this.pack.element);
+                }
+            }
+
+            class SpecialTableSpace extends MyElement{ //maybe not
+                constructor() {
+                    super(); // Call the constructor of the base class (Element)
+                }
+            }
+            
+            class Defaults{
+                mainPack = []
+                characterPack = []
+                rolesPack = []
+            }
+            class BasicTable extends Table{
+                load(defaults){
+                    super.load(defaults)
+
+                    //add main PTS (the one at the bottom)
+                    var mainPTS = new PlayerTableSpace();
+
+                    this.element.appendChild(mainPTS.element);
+
+                    this.mainPTS = mainPTS;
+
+                    //add PTS of other players
+                    var leftPTS = new PlayerTableSpace();
+                    var rightPTS = new PlayerTableSpace();
+                    var topPTS = new PlayerTableSpace();
+
+                    this.element.appendChild(leftPTS.element);
+                    this.element.appendChild(rightPTS.element);
+                    this.element.appendChild(topPTS.element);
+
+                    this.secondaryPTSs.push(leftPTS, rightPTS, topPTS);
+
+                    //add MTS at the center
+                    var MTS = new MainTableSpace();
+
+                    this.element.appendChild(MTS.element);
+
+                    this.MTS = MTS;
+
+                   
+
+
+
+                    
+                }
+            }
+        </script>
+
+
+        <script>
+            var table = new BasicTable();
+
+            table.load();
+            document.body.appendChild(table.element);
+        </script>
     </body>
 </html>

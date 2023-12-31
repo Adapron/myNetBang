@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    #div1, #div2 {
+      padding: 20px;
+      border: 1px solid #000;
+      margin: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #button {
+      width: max-content;
+      height: max-content;
+      margin: 10px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      transition: transform 0.5s ease; /* Added transition property */
+    }
+  </style>
+</head>
+<body>
+
+  <div id="div1">
+    <button id="button">Move</button>
+  </div>
+
+  <div id="div2"></div>
+
+  <script>
+
+    function moveElement(element, destination) {
+        // Get the button and div2 elements
+      
+      const div1 = element.parentNode;
+
+      // Calculate the position to move the button to div2
+      const destinationRect = destination.getBoundingClientRect();
+      const div1Rect = div1.getBoundingClientRect();
+      const newX = destinationRect.left - div1Rect.left;
+      const newY = destinationRect.top - div1Rect.top;
+
+      // Apply the new position using CSS transform
+      element.style.transform = `translate(${newX}px, ${newY}px)`;
+
+      setTimeout(() => {
+        element.style.transform = `translate(${0}px, ${0}px)`;
+        destination.appendChild(button);
+      }, 500);
+    }
+    moved = false;
+    document.getElementById('button').addEventListener('click', function() {
+        const button = document.getElementById('button');
+      const div2 = document.getElementById('div2');
+      const div1 = document.getElementById('div1');
+
+      if(!moved){
+        moveElement(button, div2);
+        moved = true;
+      }else{
+        moveElement(button, div1);
+        moved = false;
+      }
+
+        
+    });
+  </script>
+
+</body>
+</html>

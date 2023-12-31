@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .card-holder {
+      display: flex;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid #000;
+      padding: 10px; /* Add padding to create space between the cards and the container */
+    }
+
+    .space{
+      margin-right: -10px; /* Adjust the negative margin to control the overlap */
+      width: 8%;
+
+    }
+
+    .card {
+      width: 100px;
+      height: 100px;
+      border: 1px solid #000;
+      background-color: #3498db;
+      margin: 20px;
+    }
+
+    .space:hover {
+      z-index: 2; /* Bring the hovered card to the top visually */
+      
+    }
+
+    .space:hover  .card {
+        height: 110px;
+      background-color: #a634db;
+
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card-holder">
+    <div class="space"><div class="card"></div></div>
+    <div class="space"><div class="card"></div></div>
+    <div class="space"><div class="card"></div></div>
+    <div class="space"><div class="card"></div></div>
+    <div class="space"><div class="card"></div></div>
+    <div class="space"><div class="card"></div></div>
+    <div class="space"><div class="card"></div></div>
+    <div class="space"><div class="card"></div></div>
+    <div class="space"><div class="card"></div></div>
+    <div class="space"><div class="card"></div></div>
+    <div class="space"><div class="card"></div></div>
+    <div class="space"><div class="card"></div></div>
+    <!-- Add more cards as needed -->
+  </div>
+
+</body>
+</html>
